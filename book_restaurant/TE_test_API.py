@@ -85,3 +85,43 @@ print('Request  : %s\nResponse : %s\n' %("是", SendMessage_TE("是")))
 
 print('Request  : %s\nResponse : %s\n' %("不要", SendMessage_TE("不要")))
 print('Request  : %s\nResponse : %s\n' %("$exit", SendMessage_TE("$exit")))
+
+
+
+ # person-name
+ hour_str  =  '晚上七点半'
+    payload = {
+    "id": "chrono",
+    "hasContext": True,
+    "arguments": {
+        "orientation": "future",
+        "timePoint": {
+            "onlyOne": "last",
+            "distinguishType": False
+        },
+        "duration": {
+            "extract": False,
+            "onlyOne": "last"
+        }
+    },
+    "query": hour_str,
+    }
+    payload = json.dumps(payload, ensure_ascii=False)
+    payload = payload.encode('utf-8')
+    headers = {'content-type': 'application/json'}
+    r = requests.post(constants.TDE_URL, payload, timeout=float(constants.REQUEST_TIMEOUT), headers=headers)
+    r_obj = r.json()
+    r_obj
+    r_obj['informs'][0]['value']['chrono']['time']['items'][0]['hour']
+    r_obj['informs'][0]['value']['chrono']['time']['items'][0]['minute']
+   
+    
+    
+    time_judge = re.compile(u'(早|晚|凌晨|上午|中午|下午|晚上)').search('七点十分晚上')
+    
+    if time_judge is not None:
+        time_judge = time_judge.group(1)
+        
+     if time_judge in [u'晚',u'中午',u'下午',u'晚上']:
+            if exact_hour < 12:
+                exact_hour += 12
