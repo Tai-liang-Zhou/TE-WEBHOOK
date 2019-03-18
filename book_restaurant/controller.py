@@ -454,7 +454,6 @@ class ConvertParamsNLU2(Resource):
         LOG.debug('data received from TE: %s' % json.dumps(json_from_request['task_info'], ensure_ascii=False, indent=4))
 
         # parser time
-        time = json_from_request['task_info']['time']
         exact_date = json_from_request['task_info']['exact_date']
         exact_hour = json_from_request['task_info']['exact_hour']
         exact_minute = json_from_request['task_info']['exact_minute']
@@ -491,7 +490,7 @@ class ConvertParams(Resource):
             
         # parse children seat number and chair number
         seat_num_children = 0
-        if 'seat_num_children' in json_from_request['task_info']:
+        if 'seat_num_children' in json_from_request['task_info'] and json_from_request['task_info']['seat_num_children'] != "null":
             seat_num_children = get_num(json_from_request['task_info']['seat_num_children'])
             seat_num_total = int(seat_num_total) + int(seat_num_children)
         # parser date
@@ -634,9 +633,9 @@ class ResetParams(Resource):
             remove_kv_map["lastname"] = None
         if 'time_str' not in task_info:
             remove_kv_map["exact_date"] = None
-            remove_kv_map["exact_date_confirm"] = None
             remove_kv_map["exact_hour"] = None
-            remove_kv_map["exact_hour_confirm"] = None
+        if 'seat_num_children' == "null":
+            remove_kv_map["seat_num_children"] = None
         ret = encapsule_rtn_format(None, remove_kv_map)
         return Response(json.dumps(ret), status=200)
         
