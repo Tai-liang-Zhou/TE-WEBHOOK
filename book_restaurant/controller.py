@@ -5,10 +5,7 @@ from flask_restful import Resource
 from dateutil.parser import parse
 from langconv import Converter
 from datetime import datetime
-<<<<<<< HEAD
 from datetime import timedelta
-=======
->>>>>>> c22355c1a6d0d82e3c84363da5a77853591686bd
 import json
 import re
 import requests
@@ -158,18 +155,10 @@ def get_datetime(datetime_str):
     payload = payload.encode('utf-8')
     headers = {'content-type': 'application/json'}
     r = requests.post(constants.TDE_URL, payload, timeout=float(constants.REQUEST_TIMEOUT), headers=headers)
-<<<<<<< HEAD
-    r_obj = r.json()
-    r_obj    
+    r_obj = r.json() 
     # error_msg = 'API invocation fail,url:%s, status_code:%s, response:%s'\
     #             % (constants.TDE_URL, r.status_code, r.text)
     # LOG.error(error_msg)
-=======
-    # error_msg = 'API invocation fail,url:%s, status_code:%s, response:%s'\
-    #             % (constants.TDE_URL, r.status_code, r.text)
-    # LOG.error(error_msg)
-    r_obj = r.json()
->>>>>>> c22355c1a6d0d82e3c84363da5a77853591686bd
     # LOG.info(json.dumps(r_obj, ensure_ascii=False, indent=4))
     try:
         dt = parse(r_obj['informs'][0]['value']['chrono']['time']['items'][0]['ISO_DATE']['single'])
@@ -601,15 +590,11 @@ class ConvertParams(Resource):
                 exact_minute = '30'
 
         # parse exact date
-<<<<<<< HEAD
         if 'holiday' in json_from_request['task_info']:
             dt = search_holiday(json_from_request['task_info']['holiday'])
         else:
             dt = get_datetime(exact_date)
-=======
-        dt = get_datetime(exact_date)
->>>>>>> c22355c1a6d0d82e3c84363da5a77853591686bd
-
+            
         time_judge = re.compile(u'(早|晚|凌晨|上午|中午|下午|晚上)').search(exact_hour)
         if time_judge is not None:
             time_judge = time_judge.group(1)
@@ -630,12 +615,6 @@ class ConvertParams(Resource):
             exact_hour-=12
 
         exact_minute = int(get_num(str(exact_minute)))
-<<<<<<< HEAD
-        
-        
-
-=======
->>>>>>> c22355c1a6d0d82e3c84363da5a77853591686bd
 
         # LOG.info('hour:'+str(exact_hour)+' minute:'+str(exact_minute))
 
