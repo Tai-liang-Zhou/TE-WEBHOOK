@@ -1,0 +1,123 @@
+[2019-03-11 03:01:54,252][11][DummyThrea][D][controller.py:post:652] : In ResetParams, data received from TE: {
+    "user_id": "TEST_USERID1552273305203", 
+    "msg_confirm_template": [], 
+    "msg_confirm_json": {}, 
+    "text": "二月二十九日11點半", 
+    "context_seq_id": 1, 
+    "app_id": "1671049940844c7ab459e7bee6d79402", 
+    "task_info": {
+        "exact_date": "二月二十九日", 
+        "lastname_confirm": false, 
+        "exact_date_confirm": false, 
+        "exact_hour_confirm": false, 
+        "restaurant_id": "D00", 
+        "restaurant_name_confirm": false, 
+        "caller_id": "092612345678", 
+        "parsing_failed": false, 
+        "extend_data": {}, 
+        "restaurant_name": "精誠餐廳", 
+        "exact_minute_confirm": false, 
+        "restaurant_id_confirm": false, 
+        "res_dialogue_confirm": false, 
+        "seat_num_confirm": false, 
+        "sys_scenario_dialogue_cnt_limit": 30, 
+        "lastname": "曾", 
+        "end_status": "訂位", 
+        "seat_num": "4", 
+        "end_status_confirm": false, 
+        "Cellphone": "0921818917", 
+        "Cellphone_confirm": false, 
+        "exact_minute": "半", 
+        "sys_chat_history": [
+            {
+                "bot": "您好,這是精誠餐廳訂位服務,如果您需要訂位以外的服務, 請稍後再撥, 如果您要訂位, 請說出您的手機電話號碼及您貴姓。", 
+                "user": "訂位"
+            }, 
+            {
+                "bot": "請問有幾個人用餐?", 
+                "user": "姓曾 09218189176"
+            }, 
+            {
+                "bot": "請問您要訂位的日期以及時間是？", 
+                "user": "4名成人"
+            }
+        ], 
+        "phone": "0921818917", 
+        "phone_confirm": false, 
+        "return_extend_data": {}, 
+        "exact_hour": "11點半", 
+        "sys_pcnode_target_parameters": [], 
+        "sys_node_dialogue_cnt": 0, 
+        "sys_function_exe_status": true, 
+        "sys_scenario_dialogue_cnt": 3, 
+        "res_dialogue": "訂位", 
+        "sys_node_dialogue_cnt_limit": 3, 
+        "from_sip": "07010160369", 
+        "sys_pcnode_collection_completed": true
+    }, 
+    "cu": {}, 
+    "text_conversion": {
+        "text_original": "二月二十九日11點半", 
+        "text_simplified": "", 
+        "text_traditional": ""
+    }
+}
+[2019-03-11 03:01:54,253][11][DummyThrea][I][controller.py:post:655] : {"exact_date": "二月二十九日", "lastname_confirm": false, "exact_date_confirm": false, "exact_hour_confirm": false, "restaurant_id": "D00", "restaurant_name_confirm": false, "caller_id": "092612345678", "parsing_failed": false, "extend_data": {}, "restaurant_name": "精誠餐廳", "exact_minute_confirm": false, "restaurant_id_confirm": false, "res_dialogue_confirm": false, "seat_num_confirm": false, "sys_scenario_dialogue_cnt_limit": 30, "lastname": "曾", "end_status": "訂位", "seat_num": "4", "end_status_confirm": false, "Cellphone": "0921818917", "Cellphone_confirm": false, "exact_minute": "半", "sys_chat_history": [{"bot": "您好,這是精誠餐廳訂位服務,如果您需要訂位以外的服務, 請稍後再撥, 如果您要訂位, 請說出您的手機電話號碼及您貴姓。", "user": "訂位"}, {"bot": "請問有幾個人用餐?", "user": "姓曾 09218189176"}, {"bot": "請問您要訂位的日期以及時間是？", "user": "4名成人"}], "phone": "0921818917", "phone_confirm": false, "return_extend_data": {}, "exact_hour": "11點半", "sys_pcnode_target_parameters": [], "sys_node_dialogue_cnt": 0, "sys_function_exe_status": true, "sys_scenario_dialogue_cnt": 3, "res_dialogue": "訂位", "sys_node_dialogue_cnt_limit": 3, "from_sip": "07010160369", "sys_pcnode_collection_completed": true}
+[2019-03-11 03:20:43,953][11][DummyThrea][D][controller.py:post:493] : In ConvertParams, data received from TE: {
+    "exact_date": "3月5号", 
+    "lastname_confirm": false, 
+    "exact_date_confirm": false, 
+    "exact_hour_confirm": false, 
+    "restaurant_id": "D00", 
+    "restaurant_name_confirm": false, 
+    "caller_id": "092612345678", 
+    "parsing_failed": false, 
+    "extend_data": {}, 
+    "restaurant_name": "精诚餐厅", 
+    "exact_minute_confirm": false, 
+    "restaurant_id_confirm": false, 
+    "res_dialogue_confirm": false, 
+    "seat_num_confirm": false, 
+    "sys_scenario_dialogue_cnt_limit": 30, 
+    "lastname": "李", 
+    "end_status": "订位", 
+    "seat_num": "2", 
+    "end_status_confirm": false, 
+    "Cellphone": "0928189176", 
+    "Cellphone_confirm": false, 
+    "exact_minute": "半", 
+    "sys_chat_history": [
+        {
+            "bot": "您好,这是精诚餐厅订位服务,如果您需要订位以外的服务, 请稍后再拨, 如果您要订位, 请说出您的手机电话号码及您贵姓。", 
+            "user": "订位"
+        }, 
+        {
+            "bot": "请问有几个人用餐?", 
+            "user": "我姓李 电话是0928189176"
+        }, 
+        {
+            "bot": "请问您要订位的日期以及时间是？", 
+            "user": "2个"
+        }
+    ], 
+    "phone": "0928189176", 
+    "phone_confirm": false, 
+    "return_extend_data": {}, 
+    "exact_hour": "下午2点半", 
+    "sys_pcnode_target_parameters": [], 
+    "sys_node_dialogue_cnt": 0, 
+    "sys_function_exe_status": true, 
+    "sys_scenario_dialogue_cnt": 3, 
+    "res_dialogue": "订位", 
+    "sys_node_dialogue_cnt_limit": 3, 
+    "from_sip": "07010160369", 
+    "sys_pcnode_collection_completed": true
+}
+[2019-03-11 03:20:43,954][11][DummyThrea][D][connectionpool.py:_new_conn:205] : Starting new HTTP connection (1): poc2.emotibot.com:10999
+[2019-03-11 03:20:44,105][11][DummyThrea][D][connectionpool.py:_make_request:393] : http://poc2.emotibot.com:10999 "POST /tde/usp/parse HTTP/1.1" 200 139
+[2019-03-11 03:20:44,106][11][DummyThrea][D][connectionpool.py:_new_conn:205] : Starting new HTTP connection (1): poc2.emotibot.com:10999
+[2019-03-11 03:20:44,243][11][DummyThrea][D][connectionpool.py:_make_request:393] : http://poc2.emotibot.com:10999 "POST /tde/usp/parse HTTP/1.1" 200 321
+[2019-03-11 03:20:44,244][11][DummyThrea][D][connectionpool.py:_new_conn:205] : Starting new HTTP connection (1): poc2.emotibot.com:10999
+[2019-03-11 03:20:44,380][11][DummyThrea][D][connectionpool.py:_make_request:393] : http://poc2.emotibot.com:10999 "POST /tde/usp/parse HTTP/1.1" 200 380
+[2019-03-11 03:20:44,381][11][DummyThrea][D][connectionpool.py:_new_conn:205] : Starting new HTTP connection (1): poc2.emotibot.com:10999
+[2019-03-11 03:20:44,517][11][DummyThrea][D][connectionpool.py:_make_request:393] : http://poc2.emotibot.com:10999 "POST /tde/usp/parse HTTP/1.1" 200 141
