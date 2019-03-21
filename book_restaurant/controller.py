@@ -163,8 +163,7 @@ def get_datetime(datetime_str):
     try:
         dt = parse(r_obj['informs'][0]['value']['chrono']['time']['items'][0]['ISO_DATE']['single'])
     except :
-        dt = "0001-01-01"
-        dt = datetime.strptime(dt, '%Y-%m-%d')
+        dt = None
         LOG.error('type error form exact_date')
     return dt
     
@@ -183,7 +182,7 @@ def MotherDay():
                 "onlyOne": "last"
             }
         },
-        "query": Converter('zh-hans').convert('五月一號'),
+        "query": Converter('zh-hans').convert(u'五月一號'),
     }
     payload = json.dumps(payload, ensure_ascii=False)
     payload = payload.encode('utf-8')
@@ -209,35 +208,35 @@ def MotherDay():
     return dt
 
 def search_holiday(holiday_str):
-    hdt = datetime.strptime("0001-01-01", '%Y-%m-%d')
-    if holiday_str == '父亲节':
-        hdt = datetime.strptime("0001-08-08", '%Y-%m-%d')
-    elif holiday_str == '母亲节':
+    hdt = datetime.strptime("1900-01-01", '%Y-%m-%d')
+    if holiday_str == u'父亲节':
+        hdt = datetime.strptime("1900-08-08", '%Y-%m-%d')
+    elif holiday_str == u'母亲节':
         hdt = MotherDay()
-    elif holiday_str == '儿童节':
-        hdt = datetime.strptime("0001-04-04", '%Y-%m-%d')
-    elif holiday_str == '母亲节':
-        hdt = datetime.strptime("0001-04-04", '%Y-%m-%d')
-    elif holiday_str == "国庆日":
-        hdt = datetime.strptime("0001-10-10", '%Y-%m-%d')
-    elif holiday_str == "二二八":
-        hdt = datetime.strptime("0001-2-28", '%Y-%m-%d')
-    elif holiday_str == "初一":
-        hdt = get_datetime('农历一月一日')
-    elif holiday_str == "初二":
-        hdt = get_datetime('农历一月二日')
-    elif holiday_str == "初三":
-        hdt = get_datetime('农历一月三日')
-    elif holiday_str == "初四":
-        hdt = get_datetime('农历一月四日')
-    elif holiday_str == "初五":
-        hdt = get_datetime('农历一月五日')
-    elif holiday_str == "七夕情人节":
-        hdt = get_datetime('七夕')
-    elif holiday_str == '情人节':
-        LunarValentineDay = get_datetime('七夕')
-        ValentineDay = get_datetime('情人节')
-        Today =  get_datetime('今天')
+    elif holiday_str == u'儿童节':
+        hdt = datetime.strptime("1900-04-04", '%Y-%m-%d')
+    elif holiday_str == u'母亲节':
+        hdt = datetime.strptime("1900-04-04", '%Y-%m-%d')
+    elif holiday_str == u"国庆日":
+        hdt = datetime.strptime("1900-10-10", '%Y-%m-%d')
+    elif holiday_str == u"二二八":
+        hdt = datetime.strptime("1900-2-28", '%Y-%m-%d')
+    elif holiday_str == u"初一":
+        hdt = get_datetime(u'农历一月一日')
+    elif holiday_str == u"初二":
+        hdt = get_datetime(u'农历一月二日')
+    elif holiday_str == u"初三":
+        hdt = get_datetime(u'农历一月三日')
+    elif holiday_str == u"初四":
+        hdt = get_datetime(u'农历一月四日')
+    elif holiday_str == u"初五":
+        hdt = get_datetime(u'农历一月五日')
+    elif holiday_str == u"七夕情人节":
+        hdt = get_datetime(u'七夕')
+    elif holiday_str == u'情人节':
+        LunarValentineDay = get_datetime(u'七夕')
+        ValentineDay = get_datetime(u'情人节')
+        Today =  get_datetime(u'今天')
         if (ValentineDay - Today) > (LunarValentineDay - Today) :
             hdt = LunarValentineDay
         else:
@@ -578,6 +577,7 @@ class ConvertParams(Resource):
         if 'seat_num_children' in json_from_request['task_info'] and json_from_request['task_info']['seat_num_children'] != "null":
             seat_num_children = get_num(json_from_request['task_info']['seat_num_children'])
             seat_num_total = int(seat_num_total) + int(seat_num_children)
+
         # parser date
         exact_date = json_from_request['task_info']['exact_date']
         exact_hour = json_from_request['task_info']['exact_hour']
@@ -614,31 +614,40 @@ class ConvertParams(Resource):
         elif exact_hour > 22:
             exact_hour-=12
 
-        exact_minute = int(get_num(str(exact_minute)))
+        exact_minute = int(get_num(exact_minute))
 
         # LOG.info('hour:'+str(exact_hour)+' minute:'+str(exact_minute))
-
-        dt = dt.replace(hour=exact_hour, minute=exact_minute)
-
-        update_kv_map = {
-            "time_date": dt.strftime("%Y%m%d"),
-            "time_time": dt.strftime("%H:%M"),
+        remove_kv_map= {}
+        if dt  == None:
+            update_kv_map = {
             "exact_minute" : exact_minute,
             "seat_num": seat_num,
             "seat_num_total": seat_num_total
-        }
+            }
+            remove_kv_map['time_str'] = None
+            
+        else:
+            dt = dt.replace(hour=exact_hour, minute=exact_minute)
+            update_kv_map = {
+                "time_date": dt.strftime("%Y%m%d"),
+                "time_time": dt.strftime("%H:%M"),
+                "exact_minute" : exact_minute,
+                "seat_num": seat_num,
+                "seat_num_total": seat_num_total
+            }
+            # date format not include minute if minute more than zero
+            if exact_minute > 0 :
+                update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}%M{m}").format(M='月', d='日', h='點', m='分')
+            else :
+                update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}").format(M='月', d='日', h='點')
         
-        # date format not include minute if minute more than zero
-        if exact_minute > 0 :
-            update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}%M{m}").format(M='月', d='日', h='點', m='分')
-        else :
-            update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}").format(M='月', d='日', h='點')
 
         if seat_num_children != 0:
             update_kv_map['seat_num_children'] = seat_num_children
 
-
-        ret = encapsule_rtn_format(update_kv_map, None)
+        
+        remove_kv_map['holiday'] = None
+        ret = encapsule_rtn_format(update_kv_map, remove_kv_map)
         return Response(json.dumps(ret), status=200)
 
 class SearchRestaurant(Resource):
