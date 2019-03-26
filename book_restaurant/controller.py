@@ -568,9 +568,16 @@ class ConvertParams(Resource):
         # print the format of json
         LOG.debug('In ConvertParams, data received from TE: %s' % json.dumps(json_from_request['task_info'], ensure_ascii=False, indent=4))
 
+        remove_kv_map = {}
+        update_kv_map = {}
+
         # parse seat number
-        seat_num = get_num(json_from_request['task_info']['seat_num'])
-        seat_num_total = seat_num
+        if 'seat_num' not in json_from_request['task_info']:
+            seat_num_total = 0
+        else:
+            seat_num = get_num(json_from_request['task_info']['seat_num'])
+            update_kv_map["seat_num"] = seat_num
+            seat_num_total = seat_num
             
         # parse children seat number and chair number
         seat_num_children = 0
@@ -619,33 +626,25 @@ class ConvertParams(Resource):
         # LOG.info('hour:'+str(exact_hour)+' minute:'+str(exact_minute))
         remove_kv_map= {}
         if dt  == None:
-            update_kv_map = {
-            "exact_minute" : exact_minute,
-            "seat_num": seat_num,
-            "seat_num_total": seat_num_total
-            }
+            update_kv_map["exact_minute"] = exact_minute
+            update_kv_map["seat_num_total"] = seat_num_total
             remove_kv_map['time_str'] = None
             
         else:
             dt = dt.replace(hour=exact_hour, minute=int(exact_minute))
-            update_kv_map = {
-                "time_date": dt.strftime("%Y%m%d"),
-                "time_time": dt.strftime("%H:%M"),
-                "exact_minute" : exact_minute,
-                "seat_num": seat_num,
-                "seat_num_total": seat_num_total
-            }
+            update_kv_map["time_date"] = dt.strftime("%Y%m%d")
+            update_kv_map["time_time"] = dt.strftime("%H:%M")
+            update_kv_map["exact_minute"] = exact_minute
+            update_kv_map["seat_num_total"] = seat_num_total
             # date format not include minute if minute more than zero
             if int(exact_minute) > 0 :
                 update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}%M{m}").format(M='月', d='日', h='點', m='分')
             else :
                 update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}").format(M='月', d='日', h='點')
         
-
         if seat_num_children != 0:
             update_kv_map['seat_num_children'] = seat_num_children
 
-        
         remove_kv_map['holiday'] = None
         ret = encapsule_rtn_format(update_kv_map, remove_kv_map)
         return Response(json.dumps(ret), status=200)
