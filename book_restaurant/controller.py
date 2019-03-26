@@ -614,7 +614,7 @@ class ConvertParams(Resource):
         elif exact_hour > 22:
             exact_hour-=12
 
-        exact_minute = int(get_num(exact_minute))
+        exact_minute = get_num(exact_minute)
 
         # LOG.info('hour:'+str(exact_hour)+' minute:'+str(exact_minute))
         remove_kv_map= {}
@@ -627,7 +627,7 @@ class ConvertParams(Resource):
             remove_kv_map['time_str'] = None
             
         else:
-            dt = dt.replace(hour=exact_hour, minute=exact_minute)
+            dt = dt.replace(hour=exact_hour, minute=int(exact_minute))
             update_kv_map = {
                 "time_date": dt.strftime("%Y%m%d"),
                 "time_time": dt.strftime("%H:%M"),
@@ -636,7 +636,7 @@ class ConvertParams(Resource):
                 "seat_num_total": seat_num_total
             }
             # date format not include minute if minute more than zero
-            if exact_minute > 0 :
+            if int(exact_minute) > 0 :
                 update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}%M{m}").format(M='月', d='日', h='點', m='分')
             else :
                 update_kv_map['time_str'] = dt.strftime("%m{M}%d{d}%H{h}").format(M='月', d='日', h='點')
