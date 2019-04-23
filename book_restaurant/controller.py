@@ -124,9 +124,9 @@ def get_hourtime(hour_str):
     
     # LOG.info(json.dumps(r_obj, ensure_ascii=False, indent=4))
     minute = 'minute_enable'
-    if 'minute' not in r_obj['informs'][0]['value']['chrono']['time']['items'][0]:
-        minute = 'minute_disable'
     try:
+        if 'minute' not in r_obj['informs'][0]['value']['chrono']['time']['items'][0]:
+            minute = 'minute_disable'
         hour = r_obj['informs'][0]['value']['chrono']['time']['items'][0]['hour']
     except:
         hour = None
@@ -248,17 +248,20 @@ def search_holiday(holiday_str):
 class InlineStartBooking(Resource):
     def post(self):
         json_from_request = json.loads(Converter('zh-hant').convert(request.stream.read().decode('utf-8')))
+        LOG.debug('In StartBooking, data received from TE: %s' % json.dumps(json_from_request, ensure_ascii=False, indent=4))
         user_id = json_from_request['user_id']
         text = json_from_request['text']
         task_info = json_from_request['task_info']
         from_sip = task_info.get('from_sip', '')
         caller_id = task_info.get('caller_id', '')
+        uuid = task_info.get('meta_uuid', '')
         payload = {
             "user_id": user_id,
             "text": text,
             "task_info": {
                 "from_sip": from_sip,
                 "caller_id": caller_id,
+                "uuid": uuid,
             }
         }
         url = constants.SYSTEX_URL+'inline/startBooking'
@@ -283,35 +286,44 @@ class InlineDoBooking(Resource):
             "user_id": json_from_request['user_id'],
             "text": json_from_request['text'],
             "task_info": {
+                "from_sip": task_info.get('from_sip', None),
+                "caller_id": task_info.get('caller_id', None),                
+                "restaurant_id": task_info.get('restaurant_id', None),
                 "time_date": task_info.get('time_date', None),
                 "time_time": task_info.get('time_time', None),
-                "restaurant_id": task_info.get('restaurant_id', None),
                 "seat_num": task_info.get('seat_num', None),
                 "kid_num": task_info.get('seat_num_children', None),
                 "chair_num": task_info.get('chair_num', None) ,# if "chair_num" in task_info else 0
                 "lastname": task_info.get('lastname', None),
                 "phone": task_info.get('phone', None),
                 "note": task_info.get('note', None),
+                "uuid": task_info.get('meta_uuid', None),
             }
         }
         LOG.debug('In doBooking, data received from TE: %s' % json.dumps(te_payload, ensure_ascii=False, indent=4))
-
+        #TODO 為什麼要分 te_payload 和 payload兩部分來寫，之後有時間統整一下好了
         task_info = te_payload['task_info']
         payload = {
             "user_id": te_payload['user_id'],
             "text": te_payload['text'],
             "task_info": {
+                "from_sip": task_info['from_sip'] if task_info['from_sip'] is not None else '',
+                "caller_id": task_info['caller_id'] if task_info['caller_id'] is not None else '',           
+                "restaurant_id": task_info['restaurant_id'] if task_info['restaurant_id'] is not None else '',
                 "date": task_info['time_date'] if task_info['time_date'] is not None else '',
                 "time": task_info['time_time'] if task_info['time_time'] is not None else '',
-                "restaurant_id": task_info['restaurant_id'] if task_info['restaurant_id'] is not None else '',
                 "group_num": int(task_info['seat_num']) if task_info['seat_num'] is not None else 0,
                 "kid_num": int(task_info['kid_num']) if task_info['kid_num'] is not None and task_info['kid_num'] != "null" else 0,
-                "chair_num": int(get_num(task_info['chair_num'])) if task_info['chair_num'] is not None else 0,
+                "chair_num": int(get_num(task_info['chair_num'])) if task_info['chair_num'] is not None and task_info['chair_num'] != "seat_num_children"  else 0,
                 "lastname": task_info['lastname'] if task_info['lastname'] is not None else '',
                 "phone": get_phone_num(task_info['phone']) if task_info['phone'] is not None else '',
                 "note": task_info['note'] if task_info['note'] is not None else '',
+                "uuid": task_info['uuid'] if task_info['uuid'] is not None else '',
             }
         }
+        # user在詢問寶寶椅時如果說"全部都要",椅子張數等於小孩人數
+        if task_info['chair_num'] == "seat_num_children":
+            payload['chair_num'] = int(get_num(task_info['kid_num']))
         url = constants.SYSTEX_URL+'inline/doBooking'
         LOG.debug('request inline do booking API: %s' % url)
         LOG.debug('payload: %s' % json.dumps(payload, ensure_ascii=False, indent=4))
@@ -337,13 +349,17 @@ class InlineEndBooking(Resource):
         task_info = json_from_request['task_info']
         from_sip = task_info.get('from_sip', '')
         caller_id = task_info.get('caller_id', '')
+        phone = task_info.get('phone', '')
+        uuid = task_info.get('meta_uuid', '')
         payload = {
             "user_id": user_id,
             "text": text,
             "task_info": {
                 "from_sip": from_sip,
                 "caller_id": caller_id,
-                "end_status": task_info['end_status']
+                "end_status": task_info['end_status'],
+                "phone": phone,
+                "uuid": uuid,
             }
         }
         url = constants.SYSTEX_URL+'inline/endBooking'
@@ -751,6 +767,7 @@ class ResetParams(Resource):
         if 'time_str' not in task_info:
             remove_kv_map["exact_date"] = None
             remove_kv_map["exact_hour"] = None
+            remove_kv_map["exact_minute"] = None
         ret = encapsule_rtn_format(None, remove_kv_map)
         return Response(json.dumps(ret), status=200)
         

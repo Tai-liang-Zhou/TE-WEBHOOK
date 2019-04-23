@@ -14,8 +14,8 @@ def SendMessage_TE(message):
     headers = {
             'content-type': 'application/json',
             'appId' : '02632665ccf24c44a7cd4de0c3556fef',
-            'userId' : 'TomTest',
-            'sessionId' : 'ga731852'
+            'userId' : 'tom',
+            'sessionId' : 'ga0953166069'
             }
     r = requests.post(url, json=payload, timeout=float(4), headers=headers)
     r_obj = r.json()
